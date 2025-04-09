@@ -1,0 +1,30 @@
+name: Update Bun Lockfile
+
+on:
+  workflow_dispatch:  # Allows you to run this manually from the Actions tab
+
+jobs:
+  update-lockfile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Bun
+        run: curl -fsSL https://bun.sh/install | bash
+
+      - name: Set up Bun path
+        run: echo "$HOME/.bun/bin" >> $GITHUB_PATH
+
+      - name: Run bun install
+        run: bun install
+
+      - name: Commit and push bun.lockb
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add bun.lockb
+          git commit -m "chore: update bun.lockb via GitHub Action" || echo "No changes to commit"
+          git push
+
